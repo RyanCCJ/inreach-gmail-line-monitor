@@ -1,0 +1,9 @@
+# Google Clasp Settings
+.clasp.json
+
+# Mac OS
+.DS_Store
+
+# Node/Others
+node_modules/
+npm-debug.log
