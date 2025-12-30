@@ -97,5 +97,10 @@ function getActiveInreachConfigs() {
 function findConfigByInreachName(inreachName) {
   const activeConfigs = getActiveInreachConfigs();
   
-  return activeConfigs.find(config => config.inreachName === inreachName) || null;
+  // Use trim() for more flexible matching
+  const trimmedName = inreachName ? inreachName.trim() : '';
+  return activeConfigs.find(config => {
+    const configName = config.inreachName ? config.inreachName.trim() : '';
+    return configName === trimmedName;
+  }) || null;
 }

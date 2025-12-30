@@ -11,12 +11,9 @@ const PROCESSED_LABEL_NAME = 'inreach_processed';
  * @returns {Array<GoogleAppsScript.Gmail.GmailThread>} Array of Gmail threads
  */
 function searchUnprocessedInreachEmails() {
-  // Search criteria: Subject contains "inReach message" and excludes inreach_processed label
-  // Or search from sender containing "inreach@garmin.com"
-  // Note: The original Chinese search query "的 inReach 訊息" is kept as it might be specific to the email format received by the user.
-  // However, since we want full internationalization, we should probably check if the email subject changes based on language settings.
-  // For now, I'll keep the search query query compatible but translate the comments.
-  const searchQuery = '(subject:"inReach" OR from:inreach@garmin.com) -label:' + PROCESSED_LABEL_NAME;
+  // Search criteria: Subject contains inReach message (Chinese or English) and excludes processed label
+  // Also matches emails from inreach@garmin.com
+  const searchQuery = '(subject:"的 inReach 訊息" OR subject:"inReach message from" OR from:inreach@garmin.com) -label:' + PROCESSED_LABEL_NAME;
   
   try {
     const threads = GmailApp.search(searchQuery);
