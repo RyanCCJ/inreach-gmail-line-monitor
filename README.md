@@ -1,128 +1,133 @@
-# Garmin inReach Gmail 監控系統
+# Garmin inReach Gmail Monitor
 
 <div align="center">
   <img src="inreach-mini.png" width="120" alt="Garmin inReach Mini" style="border-radius: 10px; margin: 20px 0;" />
 </div>
 
-使用 Google Apps Script 自動監控 Garmin inReach 發送的郵件，解析訊息內容並寫入 Google Sheet，同時推送 Line 通知。包含一個現代化的 Web App 管理介面，方便管理隊伍與監控設定。
+Automatically monitor Garmin inReach emails using Google Apps Script, parse message content, write to Google Sheets, and send real-time Line notifications. Includes a modern Web App management interface for managing teams and monitoring settings.
 
-## 功能特色
+<div align="center">
+  <img src="preview.png" width="90%" alt="Web App Interface" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); margin: 20px 0;" />
+</div>
 
-- **Web App 管理介面**
-  - 視覺化管理 inReach 與隊伍設定
-  - 即時調整掃描頻率
-- **自動監控**
-  - 自動搜尋 Gmail 中的 inReach 郵件
-  - 解析寄件者名稱、訊息內容與 Garmin Explore 連結
-  - 使用 Gmail Label 避免重複處理
-- **資料整合**
-  - 根據隊伍設定自動分類並寫入對應分頁
-  - 支援時間範圍設定，只處理活躍隊伍的訊息
-- **即時通知**
-  - 透過 Line Messaging API 推送即時通知
+## Features
 
-## 專案結構
+- **Web App Management Interface**
+  - Visual management of inReach and team settings
+  - Real-time adjustment of scan frequency
+- **Automatic Monitoring**
+  - Automatically search for inReach emails in Gmail
+  - Parse sender name, message content, and Garmin Explore links
+  - Use Gmail Labels to avoid duplicate processing
+- **Data Integration**
+  - Automatically categorize and write to corresponding sheets based on team settings
+  - Support time range settings to process messages only for active teams
+- **Real-time Notifications**
+  - Send real-time notifications via Line Messaging API
+
+## Project Structure
 
 ```
 inreach-gmail-line-monitor/
-├── .clasp.json         # CLASP 配置
-├── webapp.gs           # Web App 服務端 API
-├── index.html          # Web App 管理介面
-├── main.gs             # 主程式入口點
-├── config.gs           # Config Sheet 讀取模組
-├── gmail.gs            # Gmail 搜尋與標籤模組
-├── parser.gs           # 郵件解析模組
-├── sheet.gs            # Google Sheet 操作模組
-├── line.gs             # Line Messaging API 推播模組
-└── inreach-mini.png    # 專案圖示
+├── .clasp.json         # CLASP configuration
+├── webapp.gs           # Web App server-side API
+├── index.html          # Web App management interface
+├── main.gs             # Main entry point
+├── config.gs           # Config Sheet reading module
+├── gmail.gs            # Gmail search and labeling module
+├── parser.gs           # Email parsing module
+├── sheet.gs            # Google Sheet operation module
+└── line.gs             # Line Messaging API notification module
 ```
 
-## 安裝步驟
+## Installation Steps
 
-### 1. 安裝 CLASP
+### 1. Install CLASP
 
 ```bash
 npm install -g @google/clasp
 ```
 
-### 2. 登入 Google 帳號
+### 2. Login to Google
 
 ```bash
 clasp login
 ```
 
-### 3. 建立 Google Apps Script 專案
+### 3. Create Google Apps Script Project
 
 ```bash
 clasp create --type standalone --title "inReach Gmail Monitor"
 ```
 
-### 4. 推送程式碼
+This will automatically create `.clasp.json`.
+
+### 4. Push Code
 
 ```bash
 clasp push
 ```
 
-### 5. 部署 Web App
+### 5. Deploy Web App
 
-1. 開啟 Apps Script 編輯器
-2. 點擊「部署」→「新增部署作業」
-3. 選擇「網頁應用程式」
-4.設定：
-   - 執行身分：我
-   - 誰可以存取：所有人 (或視需求調整)
-5. 取得 Web App URL 即可使用管理介面
+1. Open Apps Script Editor
+2. Click "Deploy" -> "New deployment"
+3. Select "Web app"
+4. Settings:
+   - Execute as: Me
+   - Who has access: Only myself (or adjust as needed)
+5. Get the Web App URL to use the management interface
 
-## Google Sheet 設定
+## Google Sheet Setup
 
-1. 建立一個名為 `inReach_monitor` 的 Google Sheet
-2. 系統會自動建立需要的 `Config` 分頁與欄位
-3. 也可透過 Web App 介面直接初始化設定
+1. Create a Google Sheet named `inReach_monitor`
+2. The system will automatically create the required `Config` sheet and columns
+3. You can also initialize settings directly via the Web App interface
 
-## Line Bot 設定
+## Line Bot Setup
 
-1. 在 Line Developers Console 建立 Channel
-2. 取得 `Channel Access Token`
-3. 在 Apps Script 專案設定的 **Script Properties** 新增：
+1. Create a Channel in the [Line Developers Console](https://developers.line.biz/)
+2. Get the **Channel Access Token**
+3. Add the following properties in Apps Script Project Settings -> **Script Properties**:
    - `LINE_CHANNEL_ACCESS_TOKEN`
-   - `LINE_USER_ID` (User ID 或 Group ID)
+   - `LINE_USER_ID` (User ID or Group ID)
 
-## 使用方式
+## Usage
 
-### 透過 Web App (推薦)
-開啟部署後的 Web App URL，即可：
-- 新增/修改/刪除 inReach 監控設定
-- 調整系統掃描頻率 (1-30 分鐘)
-- 查看目前監控狀態
+### Via Web App (Recommended)
+Open the deployed Web App URL to:
+- Add/Modify/Delete inReach monitoring settings
+- Adjust system scan frequency (1-30 minutes)
+- View current monitoring status
 
-### 手動執行
-在 Apps Script 編輯器中執行 `scanInreachMails` 函數。
+### Manual Execution
+Run the `scanInreachMails` function in the Apps Script Editor.
 
-## 輸出格式
+## Output Format
 
 ### Google Sheet
-自動建立分頁：`YYYYMMDD_隊伍名稱`
+Automatically creates sheets named: `YYYYMMDD_TeamName`
 
-| 欄位 | 說明 |
-|------|------|
-| timestamp | 郵件時間戳記 |
-| inreach_name | inReach 裝置名稱 |
-| team_name | 隊伍名稱 |
-| message_text | 訊息內容 |
-| explore_link | Garmin Explore 連結 |
-| gmail_message_id | 訊息 ID |
+| Column | Description |
+|--------|-------------|
+| timestamp | Email timestamp |
+| inreach_name | inReach device name |
+| team_name | Team name |
+| message_text | Message content |
+| explore_link | Garmin Explore link |
+| gmail_message_id | Message ID |
 
-### Line 推播
+### Line Notification
 
 ```text
-inReach：{裝置名稱}
-Team：{隊伍名稱}
-Time: {時間}
-Message：{訊息內容}
-Link：{連結}
+inReach: {Device Name}
+Team: {Team Name}
+Time: {Time}
+Message: {Message Content}
+Link: {Link}
 ```
 
-## 授權條款
+## License
 
 **Personal Use Only / Non-Commercial**
-本專案僅供個人學習與非商業用途使用。未經授權禁止用於商業營利行為。
+This project is for personal learning and non-commercial use only. Commercial use without authorization is prohibited.

@@ -1,16 +1,16 @@
 /**
- * sheet.gs - Google Sheet 建立與寫入模組
- * 負責建立隊伍分頁並寫入訊息資料
+ * sheet.gs - Google Sheet Creation and Writing Module
+ * Responsible for creating team sheets and writing message data
  */
 
-// 分頁標題欄位
+// Sheet Header Columns
 const SHEET_HEADERS = ['timestamp', 'inreach_name', 'team_name', 'message_text', 'explore_link', 'gmail_message_id'];
 
 /**
- * 產生分頁名稱
- * @param {string} teamName - 隊伍名稱
- * @param {Date} date - 日期
- * @returns {string} 分頁名稱 (YYYYMMDD_teamName)
+ * Generate Sheet Name
+ * @param {string} teamName - Team name
+ * @param {Date} date - Date
+ * @returns {string} Sheet name (YYYYMMDD_teamName)
  */
 function generateSheetName(teamName, date) {
   const year = date.getFullYear();
@@ -21,22 +21,22 @@ function generateSheetName(teamName, date) {
 }
 
 /**
- * 初始化分頁標題列
- * @param {GoogleAppsScript.Spreadsheet.Sheet} sheet - 分頁物件
+ * Initialize Sheet Headers
+ * @param {GoogleAppsScript.Spreadsheet.Sheet} sheet - Sheet object
  */
 function initializeSheetHeaders(sheet) {
   const headerRange = sheet.getRange(1, 1, 1, SHEET_HEADERS.length);
   headerRange.setValues([SHEET_HEADERS]);
   
-  // 設定標題列樣式
+  // Set header style
   headerRange.setFontWeight('bold');
   headerRange.setBackground('#4a86e8');
   headerRange.setFontColor('white');
   
-  // 凍結標題列
+  // Freeze header row
   sheet.setFrozenRows(1);
   
-  // 調整欄寬
+  // Adjust column widths
   sheet.setColumnWidth(1, 180); // timestamp
   sheet.setColumnWidth(2, 120); // inreach_name
   sheet.setColumnWidth(3, 120); // team_name
@@ -44,14 +44,14 @@ function initializeSheetHeaders(sheet) {
   sheet.setColumnWidth(5, 350); // explore_link
   sheet.setColumnWidth(6, 200); // gmail_message_id
   
-  Logger.log('已初始化分頁標題列');
+  Logger.log('Initialized sheet headers');
 }
 
 /**
- * 取得或建立隊伍分頁
- * @param {string} teamName - 隊伍名稱
- * @param {Date} date - 日期（用於命名）
- * @returns {GoogleAppsScript.Spreadsheet.Sheet} 分頁物件
+ * Get or create Team Sheet
+ * @param {string} teamName - Team name
+ * @param {Date} date - Date (used for naming)
+ * @returns {GoogleAppsScript.Spreadsheet.Sheet} Sheet object
  */
 function getOrCreateTeamSheet(teamName, date) {
   const spreadsheet = getSpreadsheet();
@@ -60,7 +60,7 @@ function getOrCreateTeamSheet(teamName, date) {
   let sheet = spreadsheet.getSheetByName(sheetName);
   
   if (!sheet) {
-    Logger.log(`建立新分頁: ${sheetName}`);
+    Logger.log(`Creating new sheet: ${sheetName}`);
     sheet = spreadsheet.insertSheet(sheetName);
     initializeSheetHeaders(sheet);
   }
@@ -69,10 +69,10 @@ function getOrCreateTeamSheet(teamName, date) {
 }
 
 /**
- * 檢查訊息是否已存在（避免重複寫入）
- * @param {GoogleAppsScript.Spreadsheet.Sheet} sheet - 分頁物件
- * @param {string} messageId - Gmail 訊息 ID
- * @returns {boolean} 是否已存在
+ * Check if message already exists (avoid duplicates)
+ * @param {GoogleAppsScript.Spreadsheet.Sheet} sheet - Sheet object
+ * @param {string} messageId - Gmail Message ID
+ * @returns {boolean} Exists
  */
 function isMessageExists(sheet, messageId) {
   const data = sheet.getDataRange().getValues();
@@ -88,19 +88,19 @@ function isMessageExists(sheet, messageId) {
 }
 
 /**
- * 寫入訊息資料到分頁
- * @param {GoogleAppsScript.Spreadsheet.Sheet} sheet - 分頁物件
- * @param {Object} data - 訊息資料
- * @returns {boolean} 是否成功寫入
+ * Write message data to sheet
+ * @param {GoogleAppsScript.Spreadsheet.Sheet} sheet - Sheet object
+ * @param {Object} data - Message data
+ * @returns {boolean} Write success status
  */
 function writeMessageToSheet(sheet, data) {
-  // 檢查是否已存在
+  // Check if already exists
   if (isMessageExists(sheet, data.messageId)) {
-    Logger.log(`訊息 ${data.messageId} 已存在，跳過`);
+    Logger.log(`Message ${data.messageId} already exists, skipping`);
     return false;
   }
   
-  // 準備資料列
+  // Prepare row data
   const row = [
     data.timestamp,
     data.inreachName,
@@ -110,18 +110,18 @@ function writeMessageToSheet(sheet, data) {
     data.messageId
   ];
   
-  // 寫入到最後一列
+  // Append to last row
   sheet.appendRow(row);
   
-  Logger.log(`已寫入訊息到分頁: ${data.inreachName} - ${data.messageText.substring(0, 30)}...`);
+  Logger.log(`Written message to sheet: ${data.inreachName} - ${data.messageText.substring(0, 30)}...`);
   return true;
 }
 
 /**
- * 處理並寫入訊息
- * @param {Object} parsedMessage - 解析後的訊息
- * @param {Object} config - Config 設定
- * @returns {boolean} 是否成功寫入
+ * Process and write message
+ * @param {Object} parsedMessage - Parsed message
+ * @param {Object} config - Config setting
+ * @returns {boolean} Write success status
  */
 function processAndWriteMessage(parsedMessage, config) {
   const sheet = getOrCreateTeamSheet(config.teamName, parsedMessage.timestamp);

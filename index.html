@@ -411,65 +411,65 @@
   <div class="container">
     <header>
       <h1>inReach Gmail Monitor</h1>
-      <p>Garmin inReach 郵件監控設定</p>
+      <p>Garmin inReach Email Monitor Settings</p>
     </header>
 
-    <!-- 新增設定 -->
+    <!-- Add Config -->
     <div class="card">
-      <div class="card-title">➕ 新增設定</div>
+      <div class="card-title">➕ Add Configuration</div>
       <div class="form-grid">
         <div class="form-group">
-          <label>inReach 名稱</label>
-          <input type="text" id="addInreachName" placeholder="e.g. inReach初號機">
+          <label>inReach Name</label>
+          <input type="text" id="addInreachName" placeholder="e.g. inReach Mini 2">
         </div>
         <div class="form-group">
-          <label>隊伍名稱</label>
-          <input type="text" id="addTeamName" placeholder="e.g. 2025跨年追雪隊">
+          <label>Team Name</label>
+          <input type="text" id="addTeamName" placeholder="e.g. Winter Expedition">
         </div>
         <div class="form-group">
-          <label>開始時間</label>
+          <label>Start Time</label>
           <input type="datetime-local" id="addStartTime">
         </div>
         <div class="form-group">
-          <label>結束時間</label>
+          <label>End Time</label>
           <input type="datetime-local" id="addEndTime">
         </div>
         <div class="form-group action-btn">
           <label>&nbsp;</label>
-          <button class="btn btn-primary" onclick="handleAddConfig()">新增設定</button>
+          <button class="btn btn-primary" onclick="handleAddConfig()">Add Config</button>
         </div>
       </div>
     </div>
 
-    <!-- 掃描設定 -->
+    <!-- Scan Settings -->
     <div class="card">
-      <div class="card-title">⏱️ 掃描設定</div>
+      <div class="card-title">⏱️ Scan Settings</div>
       <div class="inline-form">
         <div class="form-group">
-          <label>掃描頻率</label>
+          <label>Scan Frequency</label>
           <select id="scanFrequency">
-            <option value="1">每 1 分鐘</option>
-            <option value="5" selected>每 5 分鐘</option>
-            <option value="10">每 10 分鐘</option>
-            <option value="15">每 15 分鐘</option>
-            <option value="30">每 30 分鐘</option>
+            <option value="1">Every 1 min</option>
+            <option value="5" selected>Every 5 mins</option>
+            <option value="10">Every 10 mins</option>
+            <option value="15">Every 15 mins</option>
+            <option value="30">Every 30 mins</option>
           </select>
         </div>
-        <button class="btn btn-secondary" onclick="handleSetFrequency()">更新頻率</button>
+        <button class="btn btn-secondary" onclick="handleSetFrequency()">Update Frequency</button>
       </div>
     </div>
 
-    <!-- 目前設定 -->
+    <!-- Current Configs -->
     <div class="card">
-      <div class="card-title">📋 目前設定</div>
+      <div class="card-title">📋 Current Configurations</div>
       <div class="stats">
         <div class="stat-item">
           <span class="stat-value" id="activeCount">-</span>
-          <span class="stat-label">活動中</span>
+          <span class="stat-label">Active</span>
         </div>
         <div class="stat-item">
           <span class="stat-value" id="totalCount">-</span>
-          <span class="stat-label">總設定數</span>
+          <span class="stat-label">Total</span>
         </div>
       </div>
       <div class="table-container">
@@ -477,16 +477,16 @@
           <thead>
             <tr>
               <th>ID</th>
-              <th>inReach 名稱</th>
-              <th>隊伍</th>
-              <th>時間範圍</th>
-              <th>狀態</th>
-              <th>操作</th>
+              <th>inReach Name</th>
+              <th>Team</th>
+              <th>Time Range</th>
+              <th>Status</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody id="configTable">
             <tr>
-              <td colspan="6" class="loading">載入中...</td>
+              <td colspan="6" class="loading">Loading...</td>
             </tr>
           </tbody>
         </table>
@@ -494,39 +494,39 @@
     </div>
   </div>
 
-  <!-- 編輯 Modal -->
+  <!-- Edit Modal -->
   <div class="modal" id="editModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>編輯設定</h3>
+        <h3>Edit Configuration</h3>
         <button class="close-btn" onclick="closeEditModal()">&times;</button>
       </div>
       <input type="hidden" id="editId">
       <div class="form-grid" style="margin-bottom: 16px;">
         <div class="form-group">
-          <label>inReach 名稱</label>
+          <label>inReach Name</label>
           <input type="text" id="editInreachName">
         </div>
         <div class="form-group">
-          <label>隊伍名稱</label>
+          <label>Team Name</label>
           <input type="text" id="editTeamName">
         </div>
         <div class="form-group">
-          <label>開始時間</label>
+          <label>Start Time</label>
           <input type="datetime-local" id="editStartTime">
         </div>
         <div class="form-group">
-          <label>結束時間</label>
+          <label>End Time</label>
           <input type="datetime-local" id="editEndTime">
         </div>
       </div>
       <div class="checkbox-wrapper" style="margin-bottom: 16px;">
         <input type="checkbox" id="editActive">
-        <label for="editActive">啟用</label>
+        <label for="editActive">Active</label>
       </div>
       <div style="display: flex; gap: 12px; justify-content: flex-end;">
-        <button class="btn btn-secondary" onclick="closeEditModal()">取消</button>
-        <button class="btn btn-primary" onclick="handleUpdateConfig()">儲存</button>
+        <button class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="handleUpdateConfig()">Save</button>
       </div>
     </div>
   </div>
@@ -535,34 +535,34 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    // 載入資料
+    // Load Data
     function loadConfigs() {
       google.script.run
-        .withSuccessHandler(function (result) {
+        .withSuccessHandler(function(result) {
           renderConfigs(result.configs);
           document.getElementById('activeCount').textContent = result.activeCount;
           document.getElementById('totalCount').textContent = result.configs.length;
         })
-        .withFailureHandler(function (error) {
-          showToast('載入失敗：' + error.message, true);
+        .withFailureHandler(function(error) {
+          showToast('Failed to load: ' + error.message, true);
         })
         .getConfigsForWeb();
     }
-
-    // 渲染表格
+    
+    // Render Table
     function renderConfigs(configs) {
       const tbody = document.getElementById('configTable');
-
+      
       if (configs.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="loading">尚無設定</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="loading">No configurations found</td></tr>';
         return;
       }
-
-      tbody.innerHTML = configs.map(function (config) {
+      
+      tbody.innerHTML = configs.map(function(config) {
         const timeRange = formatTimeRange(config.startTime, config.endTime);
         const statusClass = config.isActive ? 'status-active' : 'status-inactive';
-        const statusText = config.isActive ? '✓ 活動中' : (config.active ? '○ 待命' : '✕ 停用');
-
+        const statusText = config.isActive ? '✓ Active' : (config.active ? '○ Standby' : '✕ Inactive');
+        
         return '<tr>' +
           '<td>' + config.id + '</td>' +
           '<td>' + config.inreachName + '</td>' +
@@ -570,22 +570,22 @@
           '<td>' + timeRange + '</td>' +
           '<td><span class="status-badge ' + statusClass + '">' + statusText + '</span></td>' +
           '<td class="actions">' +
-          '<button class="btn btn-secondary btn-sm" onclick="openEditModal(' + JSON.stringify(config).replace(/"/g, '&quot;') + ')">編輯</button>' +
-          '<button class="btn btn-danger btn-sm" onclick="handleDeleteConfig(' + config.id + ')">刪除</button>' +
+            '<button class="btn btn-secondary btn-sm" onclick="openEditModal(' + JSON.stringify(config).replace(/"/g, '&quot;') + ')">Edit</button>' +
+            '<button class="btn btn-danger btn-sm" onclick="handleDeleteConfig(' + config.id + ')">Delete</button>' +
           '</td>' +
-          '</tr>';
+        '</tr>';
       }).join('');
     }
-
-    // 格式化時間範圍
+    
+    // Format Time Range
     function formatTimeRange(start, end) {
       if (!start || !end) return '-';
       var s = new Date(start);
       var e = new Date(end);
       return (s.getMonth() + 1) + '/' + s.getDate() + ' - ' + (e.getMonth() + 1) + '/' + e.getDate();
     }
-
-    // 新增設定
+    
+    // Add Config
     function handleAddConfig() {
       var data = {
         inreachName: document.getElementById('addInreachName').value,
@@ -594,37 +594,37 @@
         endTime: document.getElementById('addEndTime').value,
         active: true
       };
-
+      
       if (!data.inreachName || !data.teamName || !data.startTime || !data.endTime) {
-        showToast('請填寫所有欄位', true);
+        showToast('Please fill in all fields', true);
         return;
       }
-
+      
       google.script.run
-        .withSuccessHandler(function (result) {
+        .withSuccessHandler(function(result) {
           if (result.success) {
-            showToast('新增成功');
+            showToast('Added successfully');
             clearAddForm();
             loadConfigs();
           } else {
-            showToast('新增失敗：' + result.error, true);
+            showToast('Failed to add: ' + result.error, true);
           }
         })
-        .withFailureHandler(function (error) {
-          showToast('新增失敗：' + error.message, true);
+        .withFailureHandler(function(error) {
+          showToast('Failed to add: ' + error.message, true);
         })
         .addConfig(data);
     }
-
-    // 清空新增表單
+    
+    // Clear Add Form
     function clearAddForm() {
       document.getElementById('addInreachName').value = '';
       document.getElementById('addTeamName').value = '';
       document.getElementById('addStartTime').value = '';
       document.getElementById('addEndTime').value = '';
     }
-
-    // 開啟編輯 Modal
+    
+    // Open Edit Modal
     function openEditModal(config) {
       document.getElementById('editId').value = config.id;
       document.getElementById('editInreachName').value = config.inreachName;
@@ -634,13 +634,13 @@
       document.getElementById('editActive').checked = config.active;
       document.getElementById('editModal').classList.add('active');
     }
-
-    // 關閉編輯 Modal
+    
+    // Close Edit Modal
     function closeEditModal() {
       document.getElementById('editModal').classList.remove('active');
     }
-
-    // 更新設定
+    
+    // Update Config
     function handleUpdateConfig() {
       var data = {
         id: document.getElementById('editId').value,
@@ -650,73 +650,73 @@
         endTime: document.getElementById('editEndTime').value,
         active: document.getElementById('editActive').checked
       };
-
+      
       google.script.run
-        .withSuccessHandler(function (result) {
+        .withSuccessHandler(function(result) {
           if (result.success) {
-            showToast('更新成功');
+            showToast('Updated successfully');
             closeEditModal();
             loadConfigs();
           } else {
-            showToast('更新失敗：' + result.error, true);
+            showToast('Failed to update: ' + result.error, true);
           }
         })
-        .withFailureHandler(function (error) {
-          showToast('更新失敗：' + error.message, true);
+        .withFailureHandler(function(error) {
+          showToast('Failed to update: ' + error.message, true);
         })
         .updateConfig(data);
     }
-
-    // 刪除設定
+    
+    // Delete Config
     function handleDeleteConfig(id) {
-      if (!confirm('確定要刪除此設定嗎？')) return;
-
+      if (!confirm('Are you sure you want to delete this configuration?')) return;
+      
       google.script.run
-        .withSuccessHandler(function (result) {
+        .withSuccessHandler(function(result) {
           if (result.success) {
-            showToast('刪除成功');
+            showToast('Deleted successfully');
             loadConfigs();
           } else {
-            showToast('刪除失敗：' + result.error, true);
+            showToast('Failed to delete: ' + result.error, true);
           }
         })
-        .withFailureHandler(function (error) {
-          showToast('刪除失敗：' + error.message, true);
+        .withFailureHandler(function(error) {
+          showToast('Failed to delete: ' + error.message, true);
         })
         .deleteConfig(id);
     }
-
-    // 設定掃描頻率
+    
+    // Set Scan Frequency
     function handleSetFrequency() {
       var minutes = parseInt(document.getElementById('scanFrequency').value);
-
+      
       google.script.run
-        .withSuccessHandler(function (result) {
+        .withSuccessHandler(function(result) {
           if (result.success) {
-            showToast('掃描頻率已更新為每 ' + result.frequency + ' 分鐘');
+            showToast('Scan frequency updated to every ' + result.frequency + ' mins');
           } else {
-            showToast('更新失敗：' + result.error, true);
+            showToast('Failed to update: ' + result.error, true);
           }
         })
-        .withFailureHandler(function (error) {
-          showToast('更新失敗：' + error.message, true);
+        .withFailureHandler(function(error) {
+          showToast('Failed to update: ' + error.message, true);
         })
         .setScanFrequency(minutes);
     }
-
-    // 顯示 Toast
+    
+    // Show Toast
     function showToast(message, isError) {
       var toast = document.getElementById('toast');
       toast.textContent = message;
       toast.className = 'toast' + (isError ? ' error' : '');
       toast.classList.add('show');
-
-      setTimeout(function () {
+      
+      setTimeout(function() {
         toast.classList.remove('show');
       }, 3000);
     }
-
-    // 初始載入
+    
+    // Initial Load
     loadConfigs();
   </script>
 </body>

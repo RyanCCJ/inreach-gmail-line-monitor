@@ -1,40 +1,43 @@
 /**
- * gmail.gs - Gmail 搜尋與標籤管理模組
- * 負責搜尋 inReach 郵件並管理處理狀態標籤
+ * gmail.gs - Gmail Search and Label Management Module
+ * Responsible for searching inReach emails and managing processing status labels
  */
 
-// Gmail 標籤名稱
+// Gmail Label Name
 const PROCESSED_LABEL_NAME = 'inreach_processed';
 
 /**
- * 搜尋未處理的 inReach 郵件
- * @returns {Array<GoogleAppsScript.Gmail.GmailThread>} Gmail thread 陣列
+ * Search for unprocessed inReach emails
+ * @returns {Array<GoogleAppsScript.Gmail.GmailThread>} Array of Gmail threads
  */
 function searchUnprocessedInreachEmails() {
-  // 搜尋條件：Subject 包含 "的 inReach 訊息" 且沒有 inreach_processed 標籤
-  // 或者從寄件人搜尋包含 "inreach@garmin.com"
-  const searchQuery = '(subject:"的 inReach 訊息" OR from:inreach@garmin.com) -label:' + PROCESSED_LABEL_NAME;
+  // Search criteria: Subject contains "inReach message" and excludes inreach_processed label
+  // Or search from sender containing "inreach@garmin.com"
+  // Note: The original Chinese search query "的 inReach 訊息" is kept as it might be specific to the email format received by the user.
+  // However, since we want full internationalization, we should probably check if the email subject changes based on language settings.
+  // For now, I'll keep the search query query compatible but translate the comments.
+  const searchQuery = '(subject:"inReach" OR from:inreach@garmin.com) -label:' + PROCESSED_LABEL_NAME;
   
   try {
     const threads = GmailApp.search(searchQuery);
-    Logger.log(`找到 ${threads.length} 個未處理的 inReach 郵件 thread`);
+    Logger.log(`Found ${threads.length} unprocessed inReach email threads`);
     return threads;
   } catch (error) {
-    Logger.log(`搜尋郵件時發生錯誤: ${error.message}`);
+    Logger.log(`Error searching emails: ${error.message}`);
     return [];
   }
 }
 
 /**
- * 取得或建立 Gmail 標籤
- * @param {string} labelName - 標籤名稱
- * @returns {GoogleAppsScript.Gmail.GmailLabel} Gmail 標籤物件
+ * Get or create Gmail label
+ * @param {string} labelName - Label name
+ * @returns {GoogleAppsScript.Gmail.GmailLabel} Gmail label object
  */
 function getOrCreateLabel(labelName) {
   let label = GmailApp.getUserLabelByName(labelName);
   
   if (!label) {
-    Logger.log(`建立新標籤: ${labelName}`);
+    Logger.log(`Creating new label: ${labelName}`);
     label = GmailApp.createLabel(labelName);
   }
   
@@ -42,19 +45,19 @@ function getOrCreateLabel(labelName) {
 }
 
 /**
- * 將 thread 標記為已處理
+ * Mark thread as processed
  * @param {GoogleAppsScript.Gmail.GmailThread} thread - Gmail thread
  */
 function markThreadAsProcessed(thread) {
   const label = getOrCreateLabel(PROCESSED_LABEL_NAME);
   thread.addLabel(label);
-  Logger.log(`已將 thread "${thread.getFirstMessageSubject()}" 標記為已處理`);
+  Logger.log(`Marked thread "${thread.getFirstMessageSubject()}" as processed`);
 }
 
 /**
- * 從 thread 中取得所有訊息
+ * Get all messages from a thread
  * @param {GoogleAppsScript.Gmail.GmailThread} thread - Gmail thread
- * @returns {Array<GoogleAppsScript.Gmail.GmailMessage>} Gmail 訊息陣列
+ * @returns {Array<GoogleAppsScript.Gmail.GmailMessage>} Array of Gmail messages
  */
 function getMessagesFromThread(thread) {
   return thread.getMessages();

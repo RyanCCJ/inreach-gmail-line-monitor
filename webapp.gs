@@ -1,10 +1,10 @@
 /**
- * webapp.gs - Web App 服務端模組
- * 提供管理介面的 API
+ * webapp.gs - Web App Server-side Module
+ * Provides API for the management interface
  */
 
 /**
- * Web App 入口點 - 返回 HTML 頁面
+ * Web App Entry Point - Returns HTML page
  */
 function doGet() {
   return HtmlService.createHtmlOutputFromFile('index')
@@ -15,14 +15,14 @@ function doGet() {
 // ==================== Config CRUD API ====================
 
 /**
- * 取得所有 Config（供前端呼叫）
- * @returns {Object} 包含 configs 和 activeCount
+ * Get all Configs (for frontend call)
+ * @returns {Object} Includes configs and activeCount
  */
 function getConfigsForWeb() {
   const configs = getAllConfigs();
   const now = new Date();
   
-  // 為每個 config 加上活動狀態
+  // Add active status to each config
   const configsWithStatus = configs.map(config => {
     const startTime = new Date(config.startTime);
     const endTime = new Date(config.endTime);
@@ -46,7 +46,7 @@ function getConfigsForWeb() {
 }
 
 /**
- * 格式化日期為 input datetime-local 格式
+ * Format date for input datetime-local format
  */
 function formatDateForInput(date) {
   if (!date) return '';
@@ -60,9 +60,9 @@ function formatDateForInput(date) {
 }
 
 /**
- * 新增設定
- * @param {Object} data - 設定資料
- * @returns {Object} 結果
+ * Add Configuration
+ * @param {Object} data - Config data
+ * @returns {Object} Result
  */
 function addConfig(data) {
   try {
@@ -87,9 +87,9 @@ function addConfig(data) {
 }
 
 /**
- * 更新設定
- * @param {Object} data - 設定資料（需包含 id）
- * @returns {Object} 結果
+ * Update Configuration
+ * @param {Object} data - Config data (must include id)
+ * @returns {Object} Result
  */
 function updateConfig(data) {
   try {
@@ -110,16 +110,16 @@ function updateConfig(data) {
       }
     }
     
-    return { success: false, error: '找不到指定的設定' };
+    return { success: false, error: 'Config not found' };
   } catch (error) {
     return { success: false, error: error.message };
   }
 }
 
 /**
- * 刪除設定
- * @param {number} id - 設定 ID
- * @returns {Object} 結果
+ * Delete Configuration
+ * @param {number} id - Config ID
+ * @returns {Object} Result
  */
 function deleteConfig(id) {
   try {
@@ -133,15 +133,15 @@ function deleteConfig(id) {
       }
     }
     
-    return { success: false, error: '找不到指定的設定' };
+    return { success: false, error: 'Config not found' };
   } catch (error) {
     return { success: false, error: error.message };
   }
 }
 
 /**
- * 取得下一個可用 ID
- * @returns {number} 下一個 ID
+ * Get Next Available ID
+ * @returns {number} Next ID
  */
 function getNextConfigId() {
   const configs = getAllConfigs();
@@ -154,15 +154,15 @@ function getNextConfigId() {
 // ==================== Trigger API ====================
 
 /**
- * 取得目前掃描頻率（分鐘）
- * @returns {number|null} 頻率或 null
+ * Get Current Scan Frequency (minutes)
+ * @returns {number|null} Frequency or null
  */
 function getScanFrequency() {
   const triggers = ScriptApp.getProjectTriggers();
   
   for (const trigger of triggers) {
     if (trigger.getHandlerFunction() === 'scanInreachMails') {
-      // 無法直接取得頻率，返回預設值
+      // Cannot get frequency directly, return default
       return 5;
     }
   }
@@ -171,16 +171,16 @@ function getScanFrequency() {
 }
 
 /**
- * 設定掃描頻率
- * @param {number} minutes - 分鐘數（1, 5, 10, 15, 30）
- * @returns {Object} 結果
+ * Set Scan Frequency
+ * @param {number} minutes - Minutes (1, 5, 10, 15, 30)
+ * @returns {Object} Result
  */
 function setScanFrequency(minutes) {
   try {
-    // 先移除現有觸發器
+    // Remove existing trigger first
     removeTrigger();
     
-    // 建立新觸發器
+    // Create new trigger
     ScriptApp.newTrigger('scanInreachMails')
       .timeBased()
       .everyMinutes(minutes)
@@ -193,8 +193,8 @@ function setScanFrequency(minutes) {
 }
 
 /**
- * 取得觸發器狀態
- * @returns {Object} 狀態資訊
+ * Get Trigger Status
+ * @returns {Object} Status info
  */
 function getTriggerStatus() {
   const triggers = ScriptApp.getProjectTriggers();
@@ -203,7 +203,7 @@ function getTriggerStatus() {
     if (trigger.getHandlerFunction() === 'scanInreachMails') {
       return {
         enabled: true,
-        frequency: 5 // 預設顯示
+        frequency: 5 // Default display
       };
     }
   }

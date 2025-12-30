@@ -1,59 +1,59 @@
 /**
- * main.gs - 主程式入口點
- * Garmin inReach Gmail 監控系統
+ * main.gs - Main Entry Point
+ * Garmin inReach Gmail Monitor System
  */
 
 /**
- * 主掃描函數 - 掃描並處理 inReach 郵件
- * 可設定為 Time-driven trigger 定時執行
+ * Main Scan Function - Scans and processes inReach emails
+ * Can be set up with a Time-driven trigger for periodic execution
  */
 function scanInreachMails() {
-  Logger.log('========== 開始掃描 inReach 郵件 ==========');
+  Logger.log('========== Start Scanning inReach Emails ==========');
   
   try {
-    // 1. 搜尋未處理的郵件
+    // 1. Search for unprocessed emails
     const threads = searchUnprocessedInreachEmails();
     
     if (threads.length === 0) {
-      Logger.log('沒有未處理的 inReach 郵件');
+      Logger.log('No unprocessed inReach emails found');
       return;
     }
     
     let processedCount = 0;
     let skippedCount = 0;
     
-    // 2. 處理每個 thread
+    // 2. Process each thread
     for (const thread of threads) {
       const messages = getMessagesFromThread(thread);
       let threadProcessed = false;
       
       for (const message of messages) {
-        // 3. 解析訊息
+        // 3. Parse message
         const parsedMessage = parseMessage(message);
         
-        // 4. 檢查是否為有效的 inReach 訊息
+        // 4. Check if it's a valid inReach message
         if (!isValidInreachMessage(parsedMessage)) {
-          Logger.log(`無效的訊息，跳過: ${message.getSubject()}`);
+          Logger.log(`Invalid message, skipping: ${message.getSubject()}`);
           continue;
         }
         
-        // 5. 查找對應的 Config 設定
+        // 5. Find corresponding Config setting
         const config = findConfigByInreachName(parsedMessage.inreachName);
         
         if (!config) {
-          Logger.log(`找不到對應的設定或已過期，跳過: ${parsedMessage.inreachName}`);
+          Logger.log(`Config not found or expired, skipping: ${parsedMessage.inreachName}`);
           skippedCount++;
           continue;
         }
         
-        // 6. 寫入資料到對應分頁
+        // 6. Write data to corresponding sheet
         const written = processAndWriteMessage(parsedMessage, config);
         
         if (written) {
           processedCount++;
           threadProcessed = true;
           
-          // 7. 推送 Line 通知（獨立處理，失敗不影響其他流程）
+          // 7. Send Line notification (handled independently, failure doesn't affect other processes)
           try {
             const notificationData = {
               inreachName: parsedMessage.inreachName,
@@ -64,43 +64,43 @@ function scanInreachMails() {
             };
             sendLineNotification(notificationData);
           } catch (lineError) {
-            Logger.log(`Line 推播失敗，但不影響其他處理: ${lineError.message}`);
+            Logger.log(`Line notification failed, but other processes are unaffected: ${lineError.message}`);
           }
         }
       }
       
-      // 7. 標記 thread 為已處理
+      // 7. Mark thread as processed
       markThreadAsProcessed(thread);
     }
     
-    Logger.log(`========== 掃描完成 ==========`);
-    Logger.log(`處理: ${processedCount} 則訊息`);
-    Logger.log(`跳過: ${skippedCount} 則訊息`);
+    Logger.log(`========== Scan Completed ==========`);
+    Logger.log(`Processed: ${processedCount} messages`);
+    Logger.log(`Skipped: ${skippedCount} messages`);
     
   } catch (error) {
-    Logger.log(`執行時發生錯誤: ${error.message}`);
+    Logger.log(`Execution Error: ${error.message}`);
     Logger.log(error.stack);
   }
 }
 
 /**
- * 設定定時觸發器（每 5 分鐘執行一次）
+ * Setup periodic trigger (runs every 5 minutes)
  */
 function setupTrigger() {
-  // 先移除現有觸發器
+  // Remove existing trigger first
   removeTrigger();
   
-  // 建立新的觸發器
+  // Create new trigger
   ScriptApp.newTrigger('scanInreachMails')
     .timeBased()
     .everyMinutes(5)
     .create();
   
-  Logger.log('已設定每 5 分鐘執行一次的觸發器');
+  Logger.log('Trigger set to run every 5 minutes');
 }
 
 /**
- * 移除所有 scanInreachMails 的觸發器
+ * Remove all triggers for scanInreachMails
  */
 function removeTrigger() {
   const triggers = ScriptApp.getProjectTriggers();
@@ -108,50 +108,50 @@ function removeTrigger() {
   for (const trigger of triggers) {
     if (trigger.getHandlerFunction() === 'scanInreachMails') {
       ScriptApp.deleteTrigger(trigger);
-      Logger.log('已移除觸發器');
+      Logger.log('Trigger removed');
     }
   }
 }
 
 /**
- * 列出所有觸發器
+ * List all triggers
  */
 function listTriggers() {
   const triggers = ScriptApp.getProjectTriggers();
   
   if (triggers.length === 0) {
-    Logger.log('目前沒有任何觸發器');
+    Logger.log('No triggers found');
     return;
   }
   
   for (const trigger of triggers) {
-    Logger.log(`觸發器: ${trigger.getHandlerFunction()} - ${trigger.getTriggerSource()}`);
+    Logger.log(`Trigger: ${trigger.getHandlerFunction()} - ${trigger.getTriggerSource()}`);
   }
 }
 
 /**
- * 測試函數 - 顯示目前的 Config 設定
+ * Test Function - Show current Config settings
  */
 function testShowConfigs() {
   const configs = getAllConfigs();
-  Logger.log('所有 Config 設定:');
+  Logger.log('All Config Settings:');
   configs.forEach(config => {
     Logger.log(JSON.stringify(config));
   });
   
   const activeConfigs = getActiveInreachConfigs();
-  Logger.log('活躍的 Config 設定:');
+  Logger.log('Active Config Settings:');
   activeConfigs.forEach(config => {
     Logger.log(JSON.stringify(config));
   });
 }
 
 /**
- * 測試函數 - 測試郵件搜尋
+ * Test Function - Test email search
  */
 function testSearchEmails() {
   const threads = searchUnprocessedInreachEmails();
-  Logger.log(`找到 ${threads.length} 個 thread`);
+  Logger.log(`Found ${threads.length} threads`);
   
   threads.forEach(thread => {
     Logger.log(`Subject: ${thread.getFirstMessageSubject()}`);
