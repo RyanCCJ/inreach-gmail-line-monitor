@@ -52,6 +52,20 @@ function scanInreachMails() {
         if (written) {
           processedCount++;
           threadProcessed = true;
+          
+          // 7. 推送 Line 通知（獨立處理，失敗不影響其他流程）
+          try {
+            const notificationData = {
+              inreachName: parsedMessage.inreachName,
+              teamName: config.teamName,
+              timestamp: parsedMessage.timestamp,
+              messageText: parsedMessage.messageText,
+              exploreLink: parsedMessage.exploreLink
+            };
+            sendLineNotification(notificationData);
+          } catch (lineError) {
+            Logger.log(`Line 推播失敗，但不影響其他處理: ${lineError.message}`);
+          }
         }
       }
       
