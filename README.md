@@ -80,9 +80,15 @@ clasp push
 
 ## Google Sheet Setup
 
-1. Create a Google Sheet named `inReach_monitor`
-2. The system will automatically create the required `Config` sheet and columns
-3. You can also initialize settings directly via the Web App interface
+1. Create a Google Sheet (any name you prefer)
+2. Copy the **Spreadsheet ID** from the URL:
+   ```
+   https://docs.google.com/spreadsheets/d/{SPREADSHEET_ID}/edit
+   ```
+3. Add the ID in Apps Script Project Settings -> **Script Properties**:
+   - Property: `SPREADSHEET_ID`
+   - Value: Your spreadsheet ID
+4. The system will automatically create the required `Config` sheet and columns
 
 ## Line Bot Setup
 
@@ -99,6 +105,21 @@ Open the deployed Web App URL to:
 - Add/Modify/Delete inReach monitoring settings
 - Adjust system scan frequency (1-30 minutes)
 - View current monitoring status
+
+### Setting Up Automatic Scanning
+
+**Important:** After adding team configurations, you need to set up the trigger for automatic scanning.
+
+**Method 1: Via Web App**
+1. In the Web App, find the **⏱️ Scan Settings** section
+2. Select scan frequency (e.g., Every 5 mins)
+3. Click **Update Frequency**
+
+**Method 2: Via Apps Script**
+1. Open Apps Script Editor (`clasp open`)
+2. Run the `setupTrigger` function
+
+You can verify the trigger is set up by checking the **Triggers** section (clock icon) in the Apps Script Editor.
 
 ### Manual Execution
 Run the `scanInreachMails` function in the Apps Script Editor.

@@ -3,8 +3,7 @@
  * Responsible for reading inReach settings from the Config sheet
  */
 
-// Google Sheet Name
-const SPREADSHEET_NAME = 'inReach_monitor';
+// Config Sheet Name
 const CONFIG_SHEET_NAME = 'Config';
 
 // Config Column Indices (0-based)
@@ -18,16 +17,24 @@ const CONFIG_COLUMNS = {
 };
 
 /**
+ * Get Spreadsheet ID from Script Properties
+ * @returns {string} Spreadsheet ID
+ */
+function getSpreadsheetId() {
+  const spreadsheetId = PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
+  if (!spreadsheetId) {
+    throw new Error('SPREADSHEET_ID not set. Please add it in Script Properties.');
+  }
+  return spreadsheetId;
+}
+
+/**
  * Get inReach_monitor Spreadsheet
  * @returns {GoogleAppsScript.Spreadsheet.Spreadsheet} Spreadsheet object
  */
 function getSpreadsheet() {
-  const files = DriveApp.getFilesByName(SPREADSHEET_NAME);
-  if (!files.hasNext()) {
-    throw new Error(`Spreadsheet "${SPREADSHEET_NAME}" not found`);
-  }
-  const file = files.next();
-  return SpreadsheetApp.open(file);
+  const spreadsheetId = getSpreadsheetId();
+  return SpreadsheetApp.openById(spreadsheetId);
 }
 
 /**

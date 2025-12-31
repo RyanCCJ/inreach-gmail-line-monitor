@@ -13,8 +13,8 @@ const MESSAGE_END_MARKERS = [
   'View their location'
 ];
 
-// Garmin Explore Link Regex
-const EXPLORE_LINK_REGEX = /https?:\/\/[a-z]+\.explore\.garmin\.com\/textmessage\/txtmsg\?[^\s]+/gi;
+// Garmin Explore Link Regex (supports both full URL and short URL)
+const EXPLORE_LINK_REGEX = /https?:\/\/(?:[a-z]+\.explore\.garmin\.com\/textmessage\/txtmsg\?[^\s]+|inreachlink\.com\/[^\s]+)/gi;
 
 /**
  * Parse inReach name from Subject
