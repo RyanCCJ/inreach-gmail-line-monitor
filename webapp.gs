@@ -8,7 +8,7 @@
  */
 function doGet() {
   return HtmlService.createHtmlOutputFromFile('index')
-    .setTitle('inReach Gmail Monitor')
+    .setTitle('Garmin inReach Monitor')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
