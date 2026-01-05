@@ -111,3 +111,34 @@ function findConfigByInreachName(inreachName) {
     return configName === trimmedName;
   }) || null;
 }
+
+/**
+ * Deactivate expired configs (past end_time)
+ * Call this function periodically to auto-deactivate expired configs
+ */
+function deactivateExpiredConfigs() {
+  const sheet = getConfigSheet();
+  const data = sheet.getDataRange().getValues();
+  const now = new Date();
+  let deactivatedCount = 0;
+  
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
+    const isActive = row[CONFIG_COLUMNS.ACTIVE] === true || row[CONFIG_COLUMNS.ACTIVE] === 'TRUE';
+    const endTime = new Date(row[CONFIG_COLUMNS.END_TIME]);
+    
+    // If config is active but has passed end_time, deactivate it
+    if (isActive && now > endTime) {
+      const rowIndex = i + 1; // 1-based row index
+      sheet.getRange(rowIndex, CONFIG_COLUMNS.ACTIVE + 1).setValue(false);
+      Logger.log(`Deactivated expired config: ${row[CONFIG_COLUMNS.INREACH_NAME]} (ended: ${endTime})`);
+      deactivatedCount++;
+    }
+  }
+  
+  if (deactivatedCount > 0) {
+    Logger.log(`Deactivated ${deactivatedCount} expired configs`);
+  }
+  
+  return deactivatedCount;
+}

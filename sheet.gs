@@ -9,15 +9,10 @@ const SHEET_HEADERS = ['timestamp', 'inreach_name', 'team_name', 'message_text',
 /**
  * Generate Sheet Name
  * @param {string} teamName - Team name
- * @param {Date} date - Date
- * @returns {string} Sheet name (YYYYMMDD_teamName)
+ * @returns {string} Sheet name (teamName)
  */
-function generateSheetName(teamName, date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  
-  return `${year}${month}${day}_${teamName}`;
+function generateSheetName(teamName) {
+  return teamName;
 }
 
 /**
@@ -50,12 +45,11 @@ function initializeSheetHeaders(sheet) {
 /**
  * Get or create Team Sheet
  * @param {string} teamName - Team name
- * @param {Date} date - Date (used for naming)
  * @returns {GoogleAppsScript.Spreadsheet.Sheet} Sheet object
  */
-function getOrCreateTeamSheet(teamName, date) {
+function getOrCreateTeamSheet(teamName) {
   const spreadsheet = getSpreadsheet();
-  const sheetName = generateSheetName(teamName, date);
+  const sheetName = generateSheetName(teamName);
   
   let sheet = spreadsheet.getSheetByName(sheetName);
   
@@ -124,7 +118,7 @@ function writeMessageToSheet(sheet, data) {
  * @returns {boolean} Write success status
  */
 function processAndWriteMessage(parsedMessage, config) {
-  const sheet = getOrCreateTeamSheet(config.teamName, parsedMessage.timestamp);
+  const sheet = getOrCreateTeamSheet(config.teamName);
   
   const data = {
     timestamp: parsedMessage.timestamp,

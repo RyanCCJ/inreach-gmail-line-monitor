@@ -11,6 +11,9 @@ function scanInreachMails() {
   Logger.log('========== Start Scanning inReach Emails ==========');
   
   try {
+    // 0. Auto-deactivate expired configs
+    deactivateExpiredConfigs();
+    
     // 1. Search for unprocessed emails
     const threads = searchUnprocessedInreachEmails();
     

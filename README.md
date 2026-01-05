@@ -127,7 +127,7 @@ Run the `scanInreachMails` function in the Apps Script Editor.
 ## Output Format
 
 ### Google Sheet
-Automatically creates sheets named: `YYYYMMDD_TeamName`
+Automatically creates sheets named: `TeamName`
 
 | Column | Description |
 |--------|-------------|
